@@ -1,23 +1,24 @@
 import * as React from "react";
-import * as FlexWebChat from "@twilio/flex-webchat-ui";
+import { Component } from "react";
+import {AppConfig, Manager, ContextProvider, RootContainer} from "@twilio/flex-webchat-ui";
 
 interface AppProps {
-    config: FlexWebChat.AppConfig.Config;
+    config: AppConfig.Config;
 }
 
 interface AppState {
-    manager?: FlexWebChat.Manager;
+    manager?: Manager;
     error?: any;
 }
 
-export default class App extends React.Component<AppProps, AppState> {
+export default class App extends Component<AppProps, AppState> {
     state: AppState = {};
 
     constructor(props: AppProps) {
         super(props);
 
         const { config } = props;
-        FlexWebChat.Manager.create(config)
+        Manager.create(config)
             .then(manager => this.setState({ manager }))
             .catch(error => this.setState({ error }));
     }
@@ -26,9 +27,9 @@ export default class App extends React.Component<AppProps, AppState> {
         const { manager, error } = this.state;
         if (manager) {
             return (
-                <FlexWebChat.ContextProvider manager={manager}>
-                    <FlexWebChat.RootContainer />
-                </FlexWebChat.ContextProvider>
+                <ContextProvider manager={manager}>
+                    <RootContainer />
+                </ContextProvider>
             );
         }
 
