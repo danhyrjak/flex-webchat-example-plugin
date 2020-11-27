@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as FlexWebChat from "@twilio/flex-webchat-ui";
-import OptionsMessageListItem from "./OptionsMessageListItem";
+import ActionItemInputControl from "./ActionItemInputControl";
+import { MessageInputChildrenProps } from "@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl"
+import { getActionItemFromComponentProps } from "./utils";
 
 interface AppProps {
     config: FlexWebChat.AppConfig.Config;
@@ -20,12 +22,13 @@ export default class App extends React.Component<AppProps, AppState> {
         const { config } = props;
         FlexWebChat.Manager.create(config)
             .then(manager => {
-                FlexWebChat.MessageListItem.Content.replace(<OptionsMessageListItem key="options-message"/>, {
-                    if: (e: any) => {
-                        console.log("in check");
-                        console.log(e.message.source?.state?.attributes?.action);
-                        return e.message.source?.state?.attributes?.action  === "CHOICE";
-                    }
+                // remove inline message
+                FlexWebChat.MessagingCanvas.defaultProps.predefinedMessage = undefined;
+
+                // setup custom message input control for action items replies
+                // @ts-ignore
+                FlexWebChat.MessagingCanvas.Input.Content.replace(<ActionItemInputControl key="input-child" />, {
+                    if: (e: MessageInputChildrenProps) => getActionItemFromComponentProps(e) !== undefined
                 });
                 this.setState({ manager });
             })
