@@ -1,4 +1,4 @@
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require("compression-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
@@ -20,6 +20,6 @@ module.exports = merge(common, {
         }),
         new CleanWebpackPlugin(),
         new CompressionPlugin(),
-        new BundleAnalyzerPlugin()
+        //new BundleAnalyzerPlugin()
     ]
 });
