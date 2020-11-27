@@ -1,25 +1,34 @@
 import * as React from "react";
-import { Component } from "react";
-import {AppConfig, Manager, ContextProvider, RootContainer} from "@twilio/flex-webchat-ui";
+import * as FlexWebChat from "@twilio/flex-webchat-ui";
+import OptionsMessageListItem from "./OptionsMessageListItem";
 
 interface AppProps {
-    config: AppConfig.Config;
+    config: FlexWebChat.AppConfig.Config;
 }
 
 interface AppState {
-    manager?: Manager;
+    manager?: FlexWebChat.Manager;
     error?: any;
 }
 
-export default class App extends Component<AppProps, AppState> {
+export default class App extends React.Component<AppProps, AppState> {
     state: AppState = {};
 
     constructor(props: AppProps) {
         super(props);
 
         const { config } = props;
-        Manager.create(config)
-            .then(manager => this.setState({ manager }))
+        FlexWebChat.Manager.create(config)
+            .then(manager => {
+                FlexWebChat.MessageListItem.Content.replace(<OptionsMessageListItem key="options-message"/>, {
+                    if: (e: any) => {
+                        console.log("in check");
+                        console.log(e.message.source?.state?.attributes?.action);
+                        return e.message.source?.state?.attributes?.action  === "CHOICE";
+                    }
+                });
+                this.setState({ manager });
+            })
             .catch(error => this.setState({ error }));
     }
 
@@ -27,9 +36,9 @@ export default class App extends Component<AppProps, AppState> {
         const { manager, error } = this.state;
         if (manager) {
             return (
-                <ContextProvider manager={manager}>
-                    <RootContainer />
-                </ContextProvider>
+                <FlexWebChat.ContextProvider manager={manager}>
+                    <FlexWebChat.RootContainer />
+                </FlexWebChat.ContextProvider>
             );
         }
 
