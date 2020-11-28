@@ -24,10 +24,10 @@ export default class App extends React.Component<AppProps, AppState> {
             .then(manager => {
                 // remove inline message
                 FlexWebChat.MessagingCanvas.defaultProps.predefinedMessage = undefined;
-
+                
                 // setup custom message input control for action items replies
                 // @ts-ignore
-                FlexWebChat.MessagingCanvas.Input.Content.replace(<ActionItemInputControl key="input-child" />, {
+                FlexWebChat.MessagingCanvas.Input.Content.replace(<ActionItemInputControl manager={manager} key="input-child" />, {
                     if: (e: MessageInputChildrenProps) => getActionItemFromComponentProps(e) !== undefined
                 });
                 this.setState({ manager });
