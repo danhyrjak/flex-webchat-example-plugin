@@ -16,8 +16,10 @@ export default class ActionItemInputControl extends React.PureComponent<ActionIt
         console.log(props);
     }
 
-    sendMessage(messageToSend: string){
-        this.props.manager.chatClient.getChannelBySid(this.props.channelSid).then(c => c.sendMessage(messageToSend));
+    sendMessage(key: string, value: string){
+        this.props.manager.chatClient.getChannelBySid(this.props.channelSid).then(c => c.sendMessage(value, {
+            choice: key
+        }));
     }
 
     resetChat(){
@@ -33,7 +35,7 @@ export default class ActionItemInputControl extends React.PureComponent<ActionIt
             case "CHOICE":
                 return (
                     <div className="input-options">
-                        {Object.entries(item.options).map(([key, value]) => <Button color="primary" key={`${key}-btn`} onClick={() => this.sendMessage(key)} value={key}>{value}</Button>)}
+                        {Object.entries(item.options).map(([key, value]) => <Button color="primary" key={`${key}-btn`} onClick={() => this.sendMessage(key, value)} value={key}>{value}</Button>)}
                     </div>
                 );
             case "RESET":

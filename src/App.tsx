@@ -22,9 +22,23 @@ export default class App extends React.Component<AppProps, AppState> {
         const { config } = props;
         FlexWebChat.Manager.create(config)
             .then(manager => {
-                // remove inline message
+                // remove inline start message
                 FlexWebChat.MessagingCanvas.defaultProps.predefinedMessage = undefined;
-                
+            
+                // send initial message to trigger flow after pre-enagement form is completed
+                FlexWebChat.Actions.addListener("afterStartEngagement", (payload) => {
+                    let { friendlyName } = payload.formData;
+                    if (!friendlyName || !friendlyName.trim()){
+                        friendlyName = "Anonymous";
+                    }
+      
+                    const { channelSid } = manager.store.getState().flex.session;
+                    manager.chatClient.getChannelBySid(channelSid)
+                        .then(channel => {
+                            channel.sendMessage(`${friendlyName}, wants to chat!`);
+                        });
+                });
+
                 // setup custom message input control for action items replies
                 // @ts-ignore
                 FlexWebChat.MessagingCanvas.Input.Content.replace(<ActionItemInputControl manager={manager} key="input-child" />, {
