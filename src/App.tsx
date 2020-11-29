@@ -22,6 +22,10 @@ export default class App extends React.Component<AppProps, AppState> {
         const { config } = props;
         FlexWebChat.Manager.create(config)
             .then(manager => {
+
+                //TODO: update other strings to match branding
+                manager.strings.WelcomeMessage = "Welcome to Chat";
+
                 // remove inline start message
                 FlexWebChat.MessagingCanvas.defaultProps.predefinedMessage = undefined;
             
@@ -35,11 +39,11 @@ export default class App extends React.Component<AppProps, AppState> {
                     const { channelSid } = manager.store.getState().flex.session;
                     manager.chatClient.getChannelBySid(channelSid)
                         .then(channel => {
-                            channel.sendMessage(`${friendlyName}, wants to chat!`);
+                            channel.sendMessage(`${friendlyName} wants to chat!`);
                         });
                 });
 
-                // setup custom message input control for action items replies
+                // setup custom message input control for "action" replies
                 // @ts-ignore
                 FlexWebChat.MessagingCanvas.Input.Content.replace(<ActionItemInputControl manager={manager} key="input-child" />, {
                     if: (e: MessageInputChildrenProps) => getActionItemFromComponentProps(e) !== undefined

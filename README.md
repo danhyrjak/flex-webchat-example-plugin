@@ -88,13 +88,16 @@ Note: you will need to change the settings on the `redirect_to_agent` - `send-to
 
 ## Whats Next
 The following is a list of outstanding items that still need to be implmented.
+I have added `TODO` comments in the code for the matching sections that may need to be updated. 
 
 1. bundle size too large. Looks like all node_modules are being included in the bundle. need to sort this out, tree shaking?
 
-2. ablity to load in custom theme. should have a theme file that you load in, path to file set as env variable to allow swap on build.
+2. customise theme to match brand. I have imported an example [brand file](/src/branding.ts) from Twilios sample github project. This will need to be customised to match the sites theme you are using the plugin in. for more details: --> [see docs](https://www.twilio.com/docs/flex/developer/webchat/theming)
 
-3. add action type for form input
+3. updating other strings to match branding --> [see docs](https://www.twilio.com/docs/flex/developer/webchat/localization-and-templating) for defaults 
 
-4. add styling for action types
+4. add action type for form input
 
-5. file/image upload is in beta. I have enabled the feature but will need to check docs for notes on security scanning and what to do with uploaded files --> [see docs](https://www.twilio.com/docs/flex/developer/webchat/enable-attachments)
+5. add/improve styling for custom action types
+
+6. file/image upload is in beta. (I have enabled the feature but will need to check docs for notes on security scanning and what to do with uploaded files --> [see docs](https://www.twilio.com/docs/flex/developer/webchat/enable-attachments))

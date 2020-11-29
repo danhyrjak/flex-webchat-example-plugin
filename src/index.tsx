@@ -1,6 +1,7 @@
 import * as React from "react";
 import { render } from "react-dom";
 import App from "./App";
+import {brandedColors} from "./branding";
 
 console.log("registering for dom loaded");
 document.addEventListener("DOMContentLoaded", (event) => {
@@ -29,6 +30,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     },
     fileAttachment: {
       enabled: true
+    },
+    colorTheme: {
+      //TODO: can remove and use standard theme instead if you want
+      overrides: brandedColors
     }
   }}></App>;
 
