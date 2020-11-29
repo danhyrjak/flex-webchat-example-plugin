@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
   console.log("DOM fully loaded and parsed");
 
   console.log("generating App");
-  //TODO: append theme into the config object below. see default sample for idea.
   const app = <App config={{
     accountSid: process.env.TWILIO_ACCOUNT_SID,
     flexFlowSid: process.env.TWILIO_WEB_CHAT_FLEX_FLOW_SID,
