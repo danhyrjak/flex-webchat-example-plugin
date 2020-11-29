@@ -81,6 +81,11 @@ On successful run the `start` script will host an example [index.html](/dev-test
 
 This is hosted using webpacks dev server and the page will auto refresh when changes are made to any of the files under the [/src](/src) directory.
 
+## Example Flow
+I have included markup for an [example studio flow](/example-studio-flow/chat-ivr-flow.json) that you can use to test this out.
+
+Note: you will need to change the settings on the `redirect_to_agent` - `send-to-flex` task to point to your own flex instance.
+
 ## Whats Next
 The following is a list of outstanding items that still need to be implmented.
 
@@ -92,4 +97,4 @@ The following is a list of outstanding items that still need to be implmented.
 
 4. add styling for action types
 
-5. enable file/image upload --> [see docs](https://www.twilio.com/docs/flex/developer/webchat/enable-attachments)
+5. file/image upload is in beta. I have enabled the feature but will need to check docs for notes on security scanning and what to do with uploaded files --> [see docs](https://www.twilio.com/docs/flex/developer/webchat/enable-attachments)

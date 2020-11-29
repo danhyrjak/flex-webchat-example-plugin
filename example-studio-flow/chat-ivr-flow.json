@@ -1,0 +1,398 @@
+{
+    "description": "Bot flow for creating a Flex webchat task",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "next": "set_flow_variables",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingRequest"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -10,
+            "y": -60
+          }
+        }
+      },
+      {
+        "name": "redirect_to_agent",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 120,
+            "y": 2220
+          },
+          "workflow": "WW746c3e093e9b2df8c69b5fe759d485c0",
+          "channel": "TC7410e043afa65b03d3606d2c955013c8",
+          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"options\": {{flow.variables.task | to_json}}}"
+        }
+      },
+      {
+        "name": "flow_selection",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "split_flow_selection",
+            "event": "incomingMessage"
+          },
+          {
+            "next": "send_timeout_message",
+            "event": "timeout"
+          },
+          {
+            "next": "send_error_message",
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 310,
+            "y": 380
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.botName}}",
+          "attributes": "{\"action\": \"CHOICE\", \"options\": {\"claims\": \"Claims\", \"policy\": \"My Policy\"}}",
+          "body": "What brings you here today?",
+          "timeout": "{{flow.variables.responseTimeoutInSeconds}}"
+        }
+      },
+      {
+        "name": "split_flow_selection",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "send_error_message",
+            "event": "noMatch"
+          },
+          {
+            "next": "policy_options",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to {\"choice\":\"policy\"}",
+                "arguments": [
+                  "{{widgets.flow_selection.inbound.Attributes}}"
+                ],
+                "type": "equal_to",
+                "value": "{\"choice\":\"policy\"}"
+              }
+            ]
+          },
+          {
+            "next": "set_task_variables_claims",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to {\"choice\":\"claims\"}",
+                "arguments": [
+                  "{{widgets.flow_selection.inbound.Attributes}}"
+                ],
+                "type": "equal_to",
+                "value": "{\"choice\":\"claims\"}"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.flow_selection.inbound.Attributes}}",
+          "offset": {
+            "x": 20,
+            "y": 660
+          }
+        }
+      },
+      {
+        "name": "send_error_message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 980,
+            "y": 670
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.botName}}",
+          "attributes": "{\"action\": \"RESET\"}",
+          "to": "{{contact.channel.address}}",
+          "body": "oops, something went wrong, please click the reset 🔄 button to try again."
+        }
+      },
+      {
+        "name": "policy_options",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "split_policy_option",
+            "event": "incomingMessage"
+          },
+          {
+            "next": "send_timeout_message",
+            "event": "timeout"
+          },
+          {
+            "next": "send_error_message",
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -320,
+            "y": 950
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.botName}}",
+          "attributes": "{\"action\": \"CHOICE\", \"options\": {\"change\": \"Make a change to my policy\", \"info\": \"Policy Information\"}}",
+          "body": "Hey there 👋\nLet's get you some assistance 😃\nPlease select one of the options below 🏍️",
+          "timeout": "{{flow.variables.responseTimeoutInSeconds}}"
+        }
+      },
+      {
+        "name": "send_connect_to_agent_message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "redirect_to_agent",
+            "event": "sent"
+          },
+          {
+            "next": "send_error_message",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 80,
+            "y": 1950
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.botName}}",
+          "to": "{{contact.channel.address}}",
+          "body": "This step requires a human to help, connecting you to one of our friendly live agents 👨‍💼👩‍💼, hang on in there!"
+        }
+      },
+      {
+        "name": "set_task_variables_claims",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "send_connect_to_agent_message",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{\"option\": \"claims\"}",
+              "key": "task"
+            }
+          ],
+          "offset": {
+            "x": 180,
+            "y": 1610
+          }
+        }
+      },
+      {
+        "name": "split_policy_option",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "send_error_message",
+            "event": "noMatch"
+          },
+          {
+            "next": "send_policy_info",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to {\"choice\":\"info\"}",
+                "arguments": [
+                  "{{widgets.policy_options.inbound.Attributes}}"
+                ],
+                "type": "equal_to",
+                "value": "{\"choice\":\"info\"}"
+              }
+            ]
+          },
+          {
+            "next": "set_task_variables_policy",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to {\"choice\":\"change\"}",
+                "arguments": [
+                  "{{widgets.policy_options.inbound.Attributes}}"
+                ],
+                "type": "equal_to",
+                "value": "{\"choice\":\"change\"}"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.policy_options.inbound.Attributes}}",
+          "offset": {
+            "x": -600,
+            "y": 1290
+          }
+        }
+      },
+      {
+        "name": "set_task_variables_policy",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "send_connect_to_agent_message",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{\"option\": \"policy\", \"policy-option\": \"{{widgets.policy_options.inbound.Body}} \"}",
+              "key": "task"
+            }
+          ],
+          "offset": {
+            "x": -300,
+            "y": 1640
+          }
+        }
+      },
+      {
+        "name": "send_timeout_message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 890,
+            "y": 1040
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.botName}}",
+          "attributes": "{\"action\": \"RESET\"}",
+          "to": "{{contact.channel.address}}",
+          "body": "I didn't get an answer in time, please click the reset 🔄 button to start a fresh chat."
+        }
+      },
+      {
+        "name": "set_flow_variables",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "flow_selection",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "Charlie Chat Bot",
+              "key": "botName"
+            },
+            {
+              "value": "1800",
+              "key": "responseTimeoutInSeconds"
+            }
+          ],
+          "offset": {
+            "x": -50,
+            "y": 160
+          }
+        }
+      },
+      {
+        "name": "send_policy_info",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "send_chat_complete",
+            "event": "sent"
+          },
+          {
+            "next": "send_error_message",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -790,
+            "y": 1630
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.botName}}",
+          "attributes": "{\"action\": \"RESET\"}",
+          "to": "{{contact.channel.address}}",
+          "body": "Heres your info:\n📗 policy number: #123456\n📅 renewal date: 25/12/2021"
+        }
+      },
+      {
+        "name": "send_chat_complete",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -810,
+            "y": 1880
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.botName}}",
+          "attributes": "{\"action\": \"RESET\"}",
+          "to": "{{contact.channel.address}}",
+          "body": "Hope this helps, if you need assistance with anything else just click the reset 🔄 button to start a new chat!"
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }

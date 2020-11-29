@@ -26,6 +26,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
       ],
       submitLabel: "Ok Let's Go!"
+    },
+    fileAttachment: {
+      enabled: true
     }
   }}></App>;
 
