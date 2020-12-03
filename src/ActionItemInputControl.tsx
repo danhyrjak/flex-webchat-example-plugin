@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {Actions, Manager} from "@twilio/flex-webchat-ui";
 import { MessageInputChildrenProps } from "@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl"
 import { getActionItemFromComponentProps } from "./utils";
@@ -6,7 +6,7 @@ import { Button, IconButton } from "@material-ui/core";
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 
 interface ActionItemInputControlProps extends MessageInputChildrenProps {
-    manager: Manager;    
+    manager: Manager;
 }
 
 export default class ActionItemInputControl extends React.PureComponent<ActionItemInputControlProps> {
