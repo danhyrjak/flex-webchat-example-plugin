@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as FlexWebChat from "@twilio/flex-webchat-ui";
+import React from "react";
+import FlexWebChat from "@twilio/flex-webchat-ui";
 import ActionItemInputControl from "./ActionItemInputControl";
 import { MessageInputChildrenProps } from "@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl"
 import { getActionItemFromComponentProps } from "./utils";
@@ -23,19 +23,19 @@ export default class App extends React.Component<AppProps, AppState> {
         FlexWebChat.Manager.create(config)
             .then(manager => {
 
-                //TODO: update other strings to match branding
+                // TODO: update other strings to match branding
                 manager.strings.WelcomeMessage = "Welcome to Chat";
 
                 // remove inline start message
                 FlexWebChat.MessagingCanvas.defaultProps.predefinedMessage = undefined;
-            
+
                 // send initial message to trigger flow after pre-enagement form is completed
                 FlexWebChat.Actions.addListener("afterStartEngagement", (payload) => {
                     let { friendlyName } = payload.formData;
                     if (!friendlyName || !friendlyName.trim()){
                         friendlyName = "Anonymous";
                     }
-      
+
                     const { channelSid } = manager.store.getState().flex.session;
                     manager.chatClient.getChannelBySid(channelSid)
                         .then(channel => {

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { render } from "react-dom";
 import App from "./App";
 import {brandedColors} from "./branding";
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       enabled: true
     },
     colorTheme: {
-      //TODO: can remove and use standard theme instead if you want
+      // TODO: can remove and use standard theme instead if you want
       overrides: brandedColors
     }
   }}></App>;

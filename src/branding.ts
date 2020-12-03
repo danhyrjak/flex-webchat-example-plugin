@@ -13,7 +13,7 @@ const personalizedColors = {
    secondaryButtonColor: "#FFFFFF"
 };
 
-const brandMessageBubbleColors = function (bgColor: string) {
+const brandMessageBubbleColors = (bgColor: string) => {
     return {
         Bubble: {
             background: bgColor,
@@ -29,7 +29,7 @@ const brandMessageBubbleColors = function (bgColor: string) {
     }
 };
 
-//TODO: add your own custom theme options below, this sample is taken from: 
+// TODO: add your own custom theme options below, this sample is taken from:
 // https://github.com/twilio/flex-webchat-ui-sample/blob/master/public/assets/webchat-branding.js
 export const brandedColors = {
     Chat: {
