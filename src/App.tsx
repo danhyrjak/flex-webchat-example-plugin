@@ -1,5 +1,5 @@
 import React from "react";
-import FlexWebChat from "@twilio/flex-webchat-ui";
+import * as FlexWebChat from "@twilio/flex-webchat-ui";
 import ActionItemInputControl from "./ActionItemInputControl";
 import { MessageInputChildrenProps } from "@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl"
 import { getActionItemFromComponentProps } from "./utils";

@@ -4,7 +4,7 @@ import App from "./App";
 import {brandedColors} from "./branding";
 
 console.log("registering for dom loaded");
-document.addEventListener("DOMContentLoaded", (event) => {
+const init = () => {
   console.log("DOM fully loaded and parsed");
 
   console.log("generating App");
@@ -47,4 +47,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
   render(app, document.getElementById(id));
 
   console.log("done");
-});
+};
+
+init();
